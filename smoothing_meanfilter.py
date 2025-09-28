@@ -1,0 +1,26 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+img = cv2.imread(r"C:\Users\ASUS\Desktop\image mid\images\face grayscale.jpg")
+img_gray = cv2.cvtColor (img, cv2.COLOR_BGR2GRAY)
+filter = np.ones ((3, 3)) /9
+ans = img_gray.copy()
+ans = np.pad(ans, 1, 'constant', constant_values=0)
+for i in range(1, ans.shape[0]-1):
+  for j in range(1, ans.shape[1]-1):
+     ans[i, j] = round (np.sum (ans[i-1:i+2, j-1:j+2] * filter))
+ans = ans[1:ans.shape [0]-1, 1:ans.shape [1]-1]
+conv2 = cv2.filter2D(img_gray, -1, filter)
+plt.figure (figsize=(10, 10))
+plt.subplot (1, 3, 1)
+plt.imshow (img_gray, cmap='gray')
+plt.title('Original Image')
+plt.subplot (1, 3, 2)
+plt.imshow (ans, cmap='gray')
+plt.title('Mean Filter (Manual)')
+plt.subplot (1, 3, 3)
+plt.imshow (conv2, cmap='gray')
+plt.title('Mean Filter (Built-in)')
+plt.show ()

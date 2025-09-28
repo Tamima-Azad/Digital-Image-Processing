@@ -1,0 +1,31 @@
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+img = cv2.imread(r"C:\Users\ASUS\Desktop\image mid\images\face grayscale.jpg")
+img_gray = cv2.cvtColor (img, cv2.COLOR_BGR2GRAY)
+filter = np.array([
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
+]) / 16
+ans = np.pad(img_gray.copy(), 1, 'constant', constant_values=0)
+for i in range(1, ans.shape[0]-1):
+    for j in range(1, ans.shape[1]-1):
+        ans[i, j] = round(np.sum(ans[i-1:i+2, j-1:j+2] * filter))
+
+ans = ans[1:ans.shape[0]-1, 1:ans.shape[1]-1]
+conv2 = cv2.filter2D(img_gray, -1, filter)
+plt.figure(figsize=(15,5))
+
+plt.subplot(1, 3, 1)
+plt.imshow(img_gray, cmap='gray')
+plt.title('Original Image')
+
+plt.subplot(1, 3, 2)
+plt.imshow(ans, cmap='gray')
+plt.title('Gaussian Filter (Manual)')
+
+plt.subplot(1, 3, 3)
+plt.imshow(conv2, cmap='gray')
+plt.title('Gaussian Filter (Built-in)')
+plt.show()
